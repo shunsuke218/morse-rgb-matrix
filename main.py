@@ -19,6 +19,8 @@ from config import config
 from info_thread import info_thread
 from news_thread import news_thread
 from output_thread import output_thread
+from AdafruitNextBus.nextbus_matrix import bus_thread
+from AdafruitNextBus.predict import predict
 
 from input_thread import input_thread
 
@@ -41,31 +43,36 @@ def main():
     thread_info = info_thread(myconfig)
     thread_news = news_thread(myconfig)
     thread_output = output_thread(myconfig)
+    thread_bus = bus_thread(myconfig)
 
     thread_input = input_thread(myconfig)
 
     # Lock Threads
     def lock_all():
-        for thread in [ thread_info, thread_output, thread_news ]:
+        for thread in [ thread_info, thread_output, thread_news, thread_bus ]:
             thread.lock.acquire() if not thread.lock.locked() else None
     lock_all()
-    thread_output.lock.release()
 
     # Start Threads
     thread_info.start()
     thread_news.start()
     thread_output.start()
+    thread_bus.start()
 
     thread_input.start()
 
+    thread_bus.lock.release()
 
     ### Main Section ###
     check_lock = lambda x: "LOCKED" if x.locked() else "NOT LOCKED"
     while True:
+        """
         logging.debug("global_status: " +  myconfig.get_global_status())
         logging.debug("info: " +  check_lock(thread_info.lock) + \
+                      ", bus: " +  check_lock(thread_bus.lock) + \
                       ", output: " +  check_lock(thread_output.lock) + \
                       ", news: " +  check_lock(thread_news.lock) )
+        """
         # Check config class, if change made, change state
         if local_status is not myconfig.get_global_status():
             logging.debug("status changed!!!")
@@ -84,7 +91,7 @@ def main():
             elif (local_status is "news_thread"):
                 thread_news.lock.release()
             elif (local_status is "bus_thread"):
-                thread_news.lock.release()
+                thread_bus.lock.release()
             elif (local_status is "sleep"):
                 lock_all()
             elif (local_status is "exit"):

@@ -37,7 +37,8 @@ class config():
     
     # Constructor
     def __init__(self):
-        self.global_status = ["output_thread"]
+        #self.global_status = ["output_thread"]
+        self.global_status = ["bus_thread"]
 
     # To String
     def __str__(self):
