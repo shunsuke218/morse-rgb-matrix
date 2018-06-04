@@ -25,7 +25,7 @@ class news_thread(threading.Thread):
 
             # Do Stuff
             while True:
-                logging.debug("global: " + str(self.global_status.get()))
+                logging.debug("global: " + str(self.global_status.get_global_status()))
                 num = random.randint(1,1000)
                 logging.debug("num: " + str(num) + \
                               ", change? " + str((num > 500)) )
@@ -36,6 +36,6 @@ class news_thread(threading.Thread):
                     break
 
             # Exitting state; change config to the next state
-            logging.debug("global_status has been updated!!" + str(self.global_status.get()) + " -> " + "input_thread")
-            self.global_status.set("input_thread")
+            logging.debug("global_status has been updated!!" + str(self.global_status.get_global_status()) + " -> " + "output_thread")
+            self.global_status.set_global_status("output_thread")
             time.sleep(3)
