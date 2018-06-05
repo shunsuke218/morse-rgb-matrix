@@ -40,14 +40,9 @@ class config():
         #self.global_status = ["output_thread"]
         self.global_status = ["bus_thread"]
 
-    # To String
-    def __str__(self):
-        return str(self.global_status)
-
     # Setter
     def set_global_status(self, status):
         self.global_status = [status]
-
 
     # Getter
     def get_global_status(self):

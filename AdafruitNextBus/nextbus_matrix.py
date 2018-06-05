@@ -172,7 +172,9 @@ class bus_thread(threading.Thread):
                         # Check the state, wait if others are in progress
                         self.lock.acquire()
                         while True:
-                                if self.config.get_global_status() is not "bus_thread": break
+                                if self.config.get_global_status() is not "bus_thread":
+                                        config.matrix.Clear() 
+                                        break
 
                                 # Clear background
                                 draw.rectangle((0, 0, width, height), fill=(0, 0, 0))

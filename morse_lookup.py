@@ -1,5 +1,7 @@
 #!/usr/bin/python3
+
 import sys
+import logging
 
 morse_code_lookup = {
     ".-":    "A",
@@ -46,10 +48,10 @@ morse_code_lookup = {
 def try_decode(bit_string):
     if bit_string in morse_code_lookup.keys():
         char = morse_code_lookup[bit_string]
-        print(char)
+        logging.log(bit_string)
+        logging.log(char)
         return char
-    #sys.stdout.write(morse_code_lookup[bit_string])
-    #sys.stdout.flush()
+    
 def to_keys(char):
     try:
         return list(morse_code_lookup.keys()) \

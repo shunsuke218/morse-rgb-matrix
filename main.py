@@ -7,6 +7,7 @@ pygame.mixer.pre_init(44100, -16, 1, 1024)
 pygame.init()
 
 import atexit
+
 import logging
 import threading, time
 
@@ -30,11 +31,9 @@ def main():
     # Config class
     global myconfig
     myconfig = config()
-    #myconfig.key = gpio.Button(self.pin, pull_up = True)
     def clearOnExit():
         myconfig.matrix.Clear()
     atexit.register(clearOnExit)
-
     
     local_status = myconfig.get_global_status()
 
@@ -58,10 +57,9 @@ def main():
     thread_news.start()
     thread_output.start()
     thread_bus.start()
-
     thread_input.start()
 
-    thread_bus.lock.release()
+    thread_bus.lock.release() # Also edit config to change entry state
 
     ### Main Section ###
     check_lock = lambda x: "LOCKED" if x.locked() else "NOT LOCKED"
@@ -73,8 +71,8 @@ def main():
                       ", output: " +  check_lock(thread_output.lock) + \
                       ", news: " +  check_lock(thread_news.lock) )
         """
-        # Check config class, if change made, change state
         if local_status is not myconfig.get_global_status():
+            # If config changes, state also changes
             logging.debug("status changed!!!")
             # Lock everything
             lock_all()
