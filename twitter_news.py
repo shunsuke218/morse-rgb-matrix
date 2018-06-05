@@ -18,7 +18,7 @@ def getNews():
             try:
                 raw = api.user_timeline(id = "cnnbrk", count = 10, include_rts = True )
             except Exception as e:
-                logging.debug("error occured!: " + e)
+                logging.debug("error occured!: " + str(e) )
                 i = i ** 2; time.sleep(i)
         config.news = [ re.sub(r'https*://.+$', '', status.text) for status in raw ]
         time.sleep(NEWS_INTERVAL)

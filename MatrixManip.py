@@ -54,7 +54,9 @@ class MatrixManip():
     def MatrixPrintStr(self, input):
         config = self.config
         for char in input:
-            if self.config.get_global_status() is not "news_thread": return
+            if self.config.get_global_status() is not "news_thread":
+                self.MatrixPrintDelete
+                return
             bit = to_keys(char)
             if char is " ":
                 time.sleep(1)
