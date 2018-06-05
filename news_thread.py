@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import random
 import threading, time
 
 # Local class
-from config import config
+from config import *
+from MatrixManip import *
+from twitter_news import *
 
 class news_thread(threading.Thread):
     # Constructor
@@ -16,26 +17,39 @@ class news_thread(threading.Thread):
         self.lock = threading.Lock()
         self.global_status = input
         self.daemon = True
+        # Config
+        self.config = input
+        self.matrix_manip = MatrixManip(self.config)
+        # Twitter News Thread
+        self.twitter = threading.Thread(target=getNews)
+        self.twitter.daemon = True
+        self.twitter.name = "Twitter News"
 
     # Main section
     def run(self):
+        self.twitter.start()
         while True:
             # Check the state, wait if others are in progress
             self.lock.acquire()
+            # Clean Matrix
+            self.matrix_manip.MatrixPrintDelete()
+            local_word = config.word[:]
+            no_action = time.time()
 
             # Do Stuff
             while True:
-                logging.debug("global: " + str(self.global_status.get_global_status()))
-                num = random.randint(1,1000)
-                logging.debug("num: " + str(num) + \
-                              ", change? " + str((num > 500)) )
-                time.sleep(.1)
+                # Check if state has changed
+                if self.config.get_global_status() is not "news_thread": break
+                if config.news:
+                    for news in config.news:
+                        logging.debug(news)
+                        if self.config.get_global_status() is not "news_thread": break
+                        self.matrix_manip.MatrixPrintStr(news)
+                        time.sleep(2)
+                        self.matrix_manip.MatrixPrintDelete()
+                    time.sleep(3)
 
-                # If signal sent, change state
-                if (num > 500):
-                    break
-
-            # Exitting state; change config to the next state
-            logging.debug("global_status has been updated!!" + str(self.global_status.get_global_status()) + " -> " + "output_thread")
-            self.global_status.set_global_status("output_thread")
-            time.sleep(3)
+            # State changed; Clean up before sleep
+            self.matrix_manip.MatrixPrintDelete()
+            #self.global_status.set_global_status("output_thread")
+            time.sleep(1)

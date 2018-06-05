@@ -7,13 +7,8 @@ pygame.mixer.pre_init(44100, -16, 1, 1024)
 pygame.init()
 
 import atexit
-
 import logging
 import threading, time
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',
-                    )
 
 # Local class
 from config import config
@@ -24,6 +19,11 @@ from AdafruitNextBus.nextbus_matrix import bus_thread
 from AdafruitNextBus.predict import predict
 
 from input_thread import input_thread
+from MatrixManip import MatrixManip
+# Logging Setups
+logging.basicConfig(level=logging.DEBUG,
+                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+                    )
 
 
 # Main Function
@@ -59,10 +59,11 @@ def main():
     thread_bus.start()
     thread_input.start()
 
-    thread_bus.lock.release() # Also edit config to change entry state
+    thread_news.lock.release() # Also edit config to change entry state
 
     ### Main Section ###
     check_lock = lambda x: "LOCKED" if x.locked() else "NOT LOCKED"
+    logging.debug("Ready")
     while True:
         """
         logging.debug("global_status: " +  myconfig.get_global_status())

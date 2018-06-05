@@ -48,8 +48,8 @@ morse_code_lookup = {
 def try_decode(bit_string):
     if bit_string in morse_code_lookup.keys():
         char = morse_code_lookup[bit_string]
-        logging.log(bit_string)
-        logging.log(char)
+        logging.debug(bit_string)
+        logging.debug(char)
         return char
     
 def to_keys(char):

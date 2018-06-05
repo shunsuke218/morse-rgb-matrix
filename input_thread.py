@@ -8,19 +8,12 @@ import gpiozero as gpio
 import _thread as thread
 
 # Local class
-from config import config
+from config import *
 
 from PIL import Image, ImageDraw, ImageFont, ImageChops
-from ToneSound import *
 #from twitter_news import *
 from morse_lookup import *
 from rgbmatrix import RGBMatrix
-
-# - * - * - * -
-# Could be deleted?
-import pygame
-from pygame.locals import *
-# - * - * - * -
 
 class input_thread(threading.Thread):
     # Constructor
@@ -32,21 +25,11 @@ class input_thread(threading.Thread):
         self.config = output
 
         ### Get information from config ###
-        # morse
-        self.MINKEYLENGTH = config.MINKEYLENGTH
-        self.KEYLENGTH = config.KEYLENGTH
-        self.WORDLENGTH = config.WORDLENGTH
-        self.SLEEPLENGTH = config.SLEEPLENGTH
-        self.DOT, self.DASH = config.DOT, config.DASH, 
         # key
         self.key = config.key
-        self.pin = config.PIN
         # matrix
-        self.matrix = config.matrix
-        self.width, self.height = config.WIDTH, config.HEIGHT
+        self.matrix = output.matrix
         # image & draw
-        self.font24 = config.FONT24
-        self.font9 = config.FONT9
         self.image = config.image
         self.draw = config.draw
         # Word & buffer
@@ -59,8 +42,7 @@ class input_thread(threading.Thread):
         self.key_up_time = time.time()
         
         # Start pygame
-        self.tone_obj = ToneSound(frequency = 500, volume = .5) # Maybe in config instead?
-
+        self.tone_obj = config.tone_obj
         # Setup key
         self.thread_key = {
             "INFO": "info_thread",
