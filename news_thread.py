@@ -44,6 +44,7 @@ class news_thread(threading.Thread):
                     for news in config.news:
                         logging.debug(news)
                         if self.config.get_global_status() is not "news_thread":
+                            self.matrix_manip.MatrixPrintDelete()
                             break
                         self.matrix_manip.MatrixPrintStr(news)
                         time.sleep(2)

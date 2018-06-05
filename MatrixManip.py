@@ -55,7 +55,8 @@ class MatrixManip():
         config = self.config
         for char in input:
             if self.config.get_global_status() is not "news_thread":
-                self.MatrixPrintDelete
+                # Refer thread.name and place this statement in MatrixPrintChar?
+                self.MatrixPrintDelete()
                 return
             bit = to_keys(char)
             if char is " ":
@@ -76,3 +77,4 @@ class MatrixManip():
         # Reset Image
         config.draw.rectangle( \
             (0, 0, WIDTH, HEIGHT), fill=(0,0,0,0) ) 
+
