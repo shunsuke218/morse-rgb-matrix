@@ -27,7 +27,7 @@ class news_thread(threading.Thread):
 
     # Main section
     def run(self):
-        self.twitter.start()
+        #self.twitter.start()
         while True:
             # Check the state, wait if others are in progress
             self.lock.acquire()

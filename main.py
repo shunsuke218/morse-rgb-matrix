@@ -59,7 +59,7 @@ def main():
     thread_bus.start()
     thread_input.start()
 
-    thread_news.lock.release() # Also edit config to change entry state
+    thread_info.lock.release() # Also edit config to change entry state
 
     ### Main Section ###
     check_lock = lambda x: "LOCKED" if x.locked() else "NOT LOCKED"

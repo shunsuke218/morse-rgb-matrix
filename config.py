@@ -56,7 +56,7 @@ class config():
     # Constructor
     def __init__(self):
         #self.global_status = ["output_thread"]
-        self.global_status = ["news_thread"]
+        self.global_status = ["info_thread"]
         #self.matrix_manip = MatrixManip(self)
 
 
