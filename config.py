@@ -25,6 +25,9 @@ WIDTH, HEIGHT = 64, 32
 # Image Setting
 FONT24 = ImageFont.truetype("helv.ttf", 24)
 FONT9 = ImageFont.truetype("helv.ttf", 9)
+FONT8 = ImageFont.load( \
+    os.path.dirname(os.path.realpath(__file__) ) \
+    + '/helvR08.pil')
 ################################################################
 # News Setting
 NEWS_INTERVAL = 300

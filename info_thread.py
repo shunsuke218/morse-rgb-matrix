@@ -6,10 +6,7 @@ import threading, time
 
 # Local class
 from config import *
-from MatrixManip import *
-from twitter_news import *
-from weather import *
-from stock import *
+from Content import *
 
 class info_thread(threading.Thread):
     # Constructor
@@ -21,7 +18,16 @@ class info_thread(threading.Thread):
         self.daemon = True
         # Config
         self.config = input
-        self.matrix_manip = MatrixManip(self.config)
+
+        self.tiles = []
+        # Time information
+        self.tiles.append( \
+            Tile( [ TimeContent(n) for n in (None, "Japan", "France") ], config) )
+        '''
+        self.tiles.append( \
+            Tile( [ WeatherContent(), StockContent(),  ], config,  )
+        )
+        '''
         # Weather Thread
         self.weather = threading.Thread(target=getWeather)
         self.weather.daemon = True
@@ -30,17 +36,21 @@ class info_thread(threading.Thread):
         self.stock = threading.Thread(target=getStock)
         self.stock.daemon = True
         self.stock.name = "Stock"
+        # Twitter News Thread
+        self.twitter = threading.Thread(target=getNews)
+        self.twitter.daemon = True
+        self.twitter.name = "Twitter News"
 
     # Main section
     def run(self):
         self.weather.start() # Merge this with "Twitter News" in News?
         self.stock.start()
+        self.twitter.start()
         while True:
             # Check the state, wait if others are in progress
             self.lock.acquire()
-            # Clean Matrix
-            self.matrix_manip.MatrixPrintDelete()
-
+            # Clear Matrix
+            self.config.matrix.Clear()
             # Do Stuff
             while True:
                 # Check if state has changed
@@ -51,10 +61,8 @@ class info_thread(threading.Thread):
                         tile.draw()
                         tile.XOffset -= 1 * tile.speed
                         tile.tileWidth -= 1 * tile.speed
-
-
-            # State changed; Clean up before sleep
-            self.matrix_manip.MatrixPrintDelete()
+            # State changed; Clean up before change state
+            self.config.matrix.Clear()
             #self.global_status.set_global_status("output_thread")
             time.sleep(1)
 
@@ -62,15 +70,15 @@ class info_thread(threading.Thread):
 
 
 class Tile():
-    def __init__(self, YOffset, contents, config):
-        self.XOffset = 0; self.YOffset = 0
+    def __init__(self, contents, config, YOffset = 0):
+        self.XOffset = 0; self.YOffset = YOffset
         self.tileWidth = 0
         self.speed = 1
         self.contents = contents # list object
         self.config = config
         # Fill up the tile with contents
-        x = 0
-        while x < WIDTH: x = self.draw()
+        x = 0; while x < WIDTH: x = self.draw()
+        self.height = max ( [ content.height for content in self.contents  ] )
             
     def draw():
         content = self.contents[0]
@@ -87,14 +95,3 @@ class Tile():
         self.XOffset += width
         return width
 
-    # TODO: Create extended classes based on Content class
-    class Content:
-        # Will be overrided
-        def __init__(self, init):
-            self.content = "hoge"
-            self.width = FONT24.getsize(self.content)[0]
-        def draw(self, x, y, draw):
-            draw.text(x, y, self.content, font=FONT24)
-        
-        
-        

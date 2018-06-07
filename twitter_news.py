@@ -12,6 +12,7 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 def getNews():
+    config.news = [ "No Data" ]
     while True:
         raw = None; i = 4;
         while raw is None:
