@@ -26,10 +26,10 @@ WIDTH, HEIGHT = 64, 32
 # Image Setting
 FONT24 = ImageFont.truetype("helv.ttf", 24)
 FONT9 = ImageFont.truetype("helv.ttf", 9)
+FONT4 = ImageFont.truetype("pixel.ttf", 5)
 FONT8 = ImageFont.load( \
     os.path.dirname(os.path.realpath(__file__) ) \
     + '/helvR08.pil')
-FONT4 = ImageFont.truetype("pixel.ttf", 4)
 ################################################################
 # News Setting
 NEWS_INTERVAL = 300
@@ -52,7 +52,7 @@ class config():
     matrix = RGBMatrix(32, 2)
     #matrix_manip = MatrixManip()
     # Image Setting
-    image = Image.new('RGB', (WIDTH, HEIGHT))
+    image = Image.new('RGB', (WIDTH + 1, HEIGHT))
     draw = ImageDraw.Draw(image)
     # News
     news = None

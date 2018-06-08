@@ -45,19 +45,19 @@ def main():
     # Launch Threads
     print ("starting threads")
     # Twitter News Thread
-    self.twitter = threading.Thread(target=getNews)
-    self.twitter.daemon = True
-    self.twitter.name = "Twitter News"
-    self.twitter.start()
+    twitter = threading.Thread(target=getNews)
+    twitter.daemon = True
+    twitter.name = "Twitter News"
+    twitter.start()
     '''
     # Weather Thread
-    self.weather = threading.Thread(target=getWeather)
-    self.weather.daemon = True
-    self.weather.name = "Weather"
+    weather = threading.Thread(target=getWeather)
+    weather.daemon = True
+    weather.name = "Weather"
     # Stock Thread
-    self.stock = threading.Thread(target=getStock)
-    self.stock.daemon = True
-    self.stock.name = "Stock"
+    stock = threading.Thread(target=getStock)
+    stock.daemon = True
+    stock.name = "Stock"
     '''
 
 

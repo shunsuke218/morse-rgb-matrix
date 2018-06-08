@@ -22,7 +22,16 @@ class info_thread(threading.Thread):
         # Time information
         self.tiles = []
         self.tiles.append( \
-            Tile( [ TimeContent(n) for n in (None, "Japan", "France") ], config) )
+            Tile( [ TimeContent(n) for n in (None, "Japan", None, "France") ], config) )
+        self.tiles[0].speed = 1
+        logging.debug("[0] height: " + str(self.tiles[0].height))
+        self.tiles.append( \
+            Tile([ HogeContent(),HogeContent() ], config, self.tiles[0].height + 1) )
+        logging.debug("[1] height: " + str(self.tiles[1].height) + " YOffset: " + str(self.tiles[1].YOffset) )
+        self.tiles[1].speed = 5
+        self.tiles.append( \
+            Tile( [ TimeContent(n) for n in (None, "Japan", None, "France") ], config, self.tiles[1].YOffset + self.tiles[1].height) )
+        self.tiles[2].speed = 4
         '''
         self.tiles.append( \
             Tile( [ WeatherContent(), StockContent(),  ], config, tiles[0].height )
@@ -53,7 +62,7 @@ class info_thread(threading.Thread):
                     tile.draw()
                 self.config.matrix.Clear()
                 self.config.matrix.SetImage(config.image, 0, 0)
-                time.sleep(.1)
+                time.sleep(.15)
 
             # State changed; Clean up before change state
             self.config.matrix.Clear()
@@ -65,15 +74,16 @@ class info_thread(threading.Thread):
 
 class Tile():
     def __init__(self, contents, config, YOffset = 0):
+        logging.debug("[tile] passed YOffset: " + str(YOffset))
         self.XOffset = 0; self.YOffset = YOffset
         self.speed = 1
         self.contents = contents # list object
         self.config = config
         if ( sum( [ content.width for content in self.contents ] ) < WIDTH ):
             raise Exception ("Content in the tile is not enough to fill the Matrix!")
-        self.height = max ( [ content.height for content in self.contents  ] )
         # Fill up the tile with contents
         self.fill()
+        self.height = max ( [ content.height for content in self.contents  ] )
 
     def rotate(self):
         # Rotate list
@@ -92,12 +102,15 @@ class Tile():
     def draw(self):
         self.config = config
         # Move left by one
-        config.image.paste(config.image, (-1, self.YOffset))
-        [ content.move() for content in self.contents ]
-        self.XOffset -= 1
+        config.image.paste(config.image, (-1 * self.speed, self.YOffset))
+        [ content.move(self.speed) for content in self.contents ]
+        self.XOffset -= 1 * self.speed
         if ( self.XOffset ) <= WIDTH:
             self.add()
+        config.draw.rectangle( (self.XOffset, self.YOffset, WIDTH, self.height), fill= (0,0,0,0) )
         [ content.draw(content.x, self.YOffset, config.draw) for content in self.contents ]
+        config.draw.rectangle( (WIDTH - 1, 0, WIDTH, HEIGHT), fill= (0,0,0,0) )
+
             
 
         
