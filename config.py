@@ -31,10 +31,22 @@ FONT8 = ImageFont.load( \
     os.path.dirname(os.path.realpath(__file__) ) \
     + '/helvR08.pil')
 ################################################################
+# Color Setting
+GREEN = ( 0, 255, 0)
+DARKGREEN = ( 110, 255, 110)
+YELLOW = (255, 255, 0)
+DARKYELLOW = (255, 255, 110)
+RED = (255, 0, 0)
+DARKRED = (255, 110, 110)
+BLUE = ( 0, 0, 255)
+DARKBLUE = ( 110, 110, 255)
+GREY = (110, 110, 110)
+WHITE = (0, 0, 0)
+################################################################
 # News Setting
 NEWS_INTERVAL = 300
 # Weather Setting
-WEATHER_INTERVAL = 300
+WEATHER_INTERVAL = 1800
 ################################################################
 
 class config():
@@ -52,10 +64,12 @@ class config():
     matrix = RGBMatrix(32, 2)
     #matrix_manip = MatrixManip()
     # Image Setting
-    image = Image.new('RGB', (WIDTH + 1, HEIGHT))
+    image = Image.new('RGB', (WIDTH, HEIGHT))
     draw = ImageDraw.Draw(image)
     # News
     news = None
+    # Weather
+    weather = {}
 
     # Constructor
     def __init__(self):

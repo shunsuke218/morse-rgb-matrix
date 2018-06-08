@@ -1,98 +1,101 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import os, re, time
+import os, time
 import urllib.request
-from xml.dom.minidom import parseString
 import logging
-
 import json
-
 from weather_keys import *
 #from config import *
-
-
 import urllib, json
-baseurl = "https://query.yahooapis.com/v1/public/yql?"
-#yql_query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='boston, ma')"
-woeid = 2495739
-woeid = 15015439
-yql_query = "select * from weather.forecast where woeid=" + str(woeid)
-yql_url = baseurl + urllib.parse.urlencode({'q':yql_query}) + "&format=json"
-result = urllib.request.urlopen(yql_url).read().decode('utf8')
-data = json.loads(result)
 
-#print (data['query']['results']['channel'])
-# condition
-base = data['query']['results']['channel']['item']
-condition = base['condition']
-icon = "weather/" + condition['code'] + ".gif"
-if not os.path.isfile(icon):
-    try: 
-        icon_url = re.search('\"(http://[^\"]*)\"', base['description'])
-        if icon_url:
-            hoge = urllib.request.urlretrieve( icon_url.group(1), icon )
-            print("icon saved.")
-    except Exception as e:
-        logging.debug("cannot download image file!")
+base_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/"
+query = "?language=en-US&details=true&apikey="
 
-print (json.dumps(data, indent=4, sort_keys=True))
-#print (base['description'])
+class Config():
+    def __init__(self):
+        self.weather = {}
 
+    
+def getWeather(config, location):
 
+    def FtoC(input):
+        return round( ((input - 32) * 5.0/9.0), 0)
 
-
-
-
-
-
-
-"""
-location = "MA/Cambridge.json"
-url = "http://api.wunderground.com/api/" + wunderground_key +"/conditions/q/" + location
-
-connection = urllib.request.urlopen(
-    "http://api.openweathermap.org/data/2.5/forecast?q=Boston,USA&units=metric&mode=xml&APPID=" +
-    weather_key )
-raw = connection.read().decode('utf8')
-connection.close()
-
-xml = parseString(raw)
-#print(xml.toprettyxml())
-print( [ node.getAttributeNode("from").nodeValue for node in xml.getElementsByTagName("time") ] )
-"""
-"""
-print(str(xml))
-for item in xml:
-    print (item)
-"""
-"""
-#print (str(raw))
-myjson  = json.loads(raw)
-#raw (json.dumps(myjson, indent=4, sort_keys=True))
-print(myjson.keys())
-for item in myjson["list"]:
-    for key, item in item.items():
-        print (key, item)
-    print()
-"""        
-#print( myjson["list"] )
-#print (str(raw))
-#print(myjson["city"]["name"])
-#print (myjson["coord"])
-#logging.debug(str(raw))
-"""
-def getNews():
-    config.news = [ "No Data" ]
+    #weather_key = "hogehoge!"
+    #config = Config()
+    config.weather = {}
+    url = base_url + str(location) + query + weather_key
     while True:
-        raw = None; i = 4;
-        while raw is None:
-            try:
-                raw = api.user_timeline(id = "cnnbrk", count = 10, include_rts = True )
+        temp = {};
+        i = 2; result = None
+        t = time.time()
+        while not result:
+            try: 
+                result = urllib.request.urlopen(url).read().decode('utf8')
+                t = time.time()
             except Exception as e:
-                logging.debug("error occured!: " + str(e) )
-                i = i ** 2; time.sleep(i)
-        config.news = [ re.sub(r'https*://.+$', '', status.text) for status in raw ]
-        time.sleep(NEWS_INTERVAL)
+                logging.debug("error occured!: " + str(e))
+                #print("error occured!: " + str(e))
+                i = i **2; time.sleep(i)
+                if time.time() - t > 14400: # No update for 4hrs
+                    config.weather = {}
 
-"""
+        #with open ("result.json", 'w') as f:
+        #    f.write(result)
+        #print("saved to result.json")
+            
+        data = json.loads(result)
+
+        # Headline
+        temp["headline"] = data["Headline"]["Text"]
+
+        # DailyForecasts
+        forecasts = data["DailyForecasts"][0]
+
+        #     - Sun
+        data_sun = forecasts["Sun"]
+        temp["rise"] = int(data_tempe["EpochRise"])
+        temp["set"] = int(data_tempe["EpochSet"])
+
+        #     - Temperature
+        data_tempe = forecasts["Temperature"]
+        #         - Minimum
+        minf = int(data_tempe["Minimum"]["Value"])
+        temp["min"] = (minf, FtoC(minf))
+        #         - Maximum
+        maxf = int(data_tempe["Maximum"]["Value"])
+        temp["max"] = (maxf, FtoC(maxf))
+
+        #     - RealFeelTemperature
+        data_rftempe = forecasts["RealFeelTemperature"]
+        #         - Minimum
+        minf = int(data_rftempe["Minimum"]["Value"])
+        temp["rfmin"] = (minf, FtoC(minf))
+        #         - Maximum
+        maxf = int(data_rftempe["Maximum"]["Value"])
+        temp["rfmax"] = (maxf, FtoC(maxf))
+
+        #     - Day
+        data_day = forecasts["Day"]
+        temp["dicon"] = data_day["Icon"]
+        temp["dphrase"] = data_day["LongPhrase"]
+        temp["dpreciption"] = data_day["PrecipitationProbability"]
+        
+        #     - Night
+        data_day = forecasts["Night"]
+        temp["nicon"] = data_day["Icon"]
+        temp["nphrase"] = data_day["LongPhrase"]
+        temp["npreciption"] = data_day["PrecipitationProbability"]
+
+        # Re-link config.weather
+        config.weather = temp
+
+        logging.debug("weather info updated: " + str(config.weather))
+        #print ("weather info updated: " + str(config.weather))
+
+        # Sleep
+        time.sleep(WEATHER_INTERVAL)
+        
+if __name__ == '__main__':
+    getWeather(338668)

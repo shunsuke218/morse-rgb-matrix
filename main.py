@@ -44,11 +44,18 @@ def main():
 
     # Launch Threads
     print ("starting threads")
-    # Twitter News Thread
-    twitter = threading.Thread(target=getNews)
-    twitter.daemon = True
-    twitter.name = "Twitter News"
-    twitter.start()
+    ## Twitter News Thread
+    #twitter = threading.Thread(target=getNews)
+    #twitter.daemon = True
+    #twitter.name = "Twitter News"
+    #twitter.start()
+    # Weather Thread
+    # Start thread to update weather information
+    locid = weather_loc.get(location, weather_loc["Boston"])
+    self.thread = threading.Thread(target=getWeather, args=(config, locid))
+    self.thread.daemon = True
+    self.thread.name = "Weather"
+    self.start()
     '''
     # Weather Thread
     weather = threading.Thread(target=getWeather)

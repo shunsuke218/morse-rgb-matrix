@@ -14,7 +14,7 @@ api = tweepy.API(auth)
 def getNews():
     config.news = [ "No Data" ]
     while True:
-        raw = None; i = 4;
+        raw = None; i = 2;
         while raw is None:
             try:
                 raw = api.user_timeline(id = "cnnbrk", count = 10, include_rts = True )
