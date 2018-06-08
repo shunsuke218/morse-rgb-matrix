@@ -14,6 +14,7 @@ MINKEYLENGTH = .10 # .07 # Minimum dit
 KEYLENGTH = .20 #dit-doh boundary
 WORDLENGTH = .90 # Word boundary
 SLEEPLENGTH = 2 # Goto Sleep
+INFOLENGTH = 60 # Goto Info Threadx
 DOT = "."; DASH = "-"    
 ################################################################
 # Key Setting
@@ -28,9 +29,12 @@ FONT9 = ImageFont.truetype("helv.ttf", 9)
 FONT8 = ImageFont.load( \
     os.path.dirname(os.path.realpath(__file__) ) \
     + '/helvR08.pil')
+FONT4 = ImageFont.truetype("pixel.ttf", 4)
 ################################################################
 # News Setting
 NEWS_INTERVAL = 300
+# Weather Setting
+WEATHER_INTERVAL = 300
 ################################################################
 
 class config():

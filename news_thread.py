@@ -20,14 +20,9 @@ class news_thread(threading.Thread):
         # Config
         self.config = input
         self.matrix_manip = MatrixManip(self.config)
-        # Twitter News Thread
-        self.twitter = threading.Thread(target=getNews)
-        self.twitter.daemon = True
-        self.twitter.name = "Twitter News"
 
     # Main section
     def run(self):
-        #self.twitter.start()
         while True:
             # Check the state, wait if others are in progress
             self.lock.acquire()

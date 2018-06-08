@@ -20,6 +20,11 @@ from AdafruitNextBus.predict import predict
 
 from input_thread import input_thread
 from MatrixManip import MatrixManip
+
+from twitter_news import *
+#from weather import *
+#from stock import *
+
 # Logging Setups
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
@@ -39,6 +44,24 @@ def main():
 
     # Launch Threads
     print ("starting threads")
+    # Twitter News Thread
+    self.twitter = threading.Thread(target=getNews)
+    self.twitter.daemon = True
+    self.twitter.name = "Twitter News"
+    self.twitter.start()
+    '''
+    # Weather Thread
+    self.weather = threading.Thread(target=getWeather)
+    self.weather.daemon = True
+    self.weather.name = "Weather"
+    # Stock Thread
+    self.stock = threading.Thread(target=getStock)
+    self.stock.daemon = True
+    self.stock.name = "Stock"
+    '''
+
+
+    
     thread_info = info_thread(myconfig)
     thread_news = news_thread(myconfig)
     thread_output = output_thread(myconfig)
