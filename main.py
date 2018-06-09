@@ -22,7 +22,8 @@ from input_thread import input_thread
 from MatrixManip import MatrixManip
 
 from twitter_news import *
-#from weather import *
+from weather import *
+from weather_keys import *
 #from stock import *
 
 # Logging Setups
@@ -45,17 +46,17 @@ def main():
     # Launch Threads
     print ("starting threads")
     ## Twitter News Thread
-    #twitter = threading.Thread(target=getNews)
-    #twitter.daemon = True
-    #twitter.name = "Twitter News"
-    #twitter.start()
+    twitter = threading.Thread(target=getNews)
+    twitter.daemon = True
+    twitter.name = "Twitter News"
+    twitter.start()
     # Weather Thread
     # Start thread to update weather information
-    locid = weather_loc.get(location, weather_loc["Boston"])
-    self.thread = threading.Thread(target=getWeather, args=(config, locid))
-    self.thread.daemon = True
-    self.thread.name = "Weather"
-    self.start()
+    locid = weather_loc.get("Boston", weather_loc["Boston"])
+    weather = threading.Thread(target=getWeather, args=(config, locid))
+    weather.daemon = True
+    weather.name = "Weather"
+    weather.start()
     '''
     # Weather Thread
     weather = threading.Thread(target=getWeather)

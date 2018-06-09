@@ -24,12 +24,15 @@ PIN = 25
 WIDTH, HEIGHT = 64, 32
 ################################################################
 # Image Setting
-FONT24 = ImageFont.truetype("helv.ttf", 24)
-FONT9 = ImageFont.truetype("helv.ttf", 9)
+FONT1 = ImageFont.truetype("pixel.ttf", 2)
+FONT3 = ImageFont.truetype("pixel.ttf", 4)
 FONT4 = ImageFont.truetype("pixel.ttf", 5)
+FONT7 = ImageFont.truetype("pixel.ttf", 7)
 FONT8 = ImageFont.load( \
     os.path.dirname(os.path.realpath(__file__) ) \
     + '/helvR08.pil')
+FONT9 = ImageFont.truetype("helv.ttf", 9)
+FONT24 = ImageFont.truetype("helv.ttf", 24)
 ################################################################
 # Color Setting
 GREEN = ( 0, 255, 0)
@@ -41,7 +44,8 @@ DARKRED = (255, 110, 110)
 BLUE = ( 0, 0, 255)
 DARKBLUE = ( 110, 110, 255)
 GREY = (110, 110, 110)
-WHITE = (0, 0, 0)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 ################################################################
 # News Setting
 NEWS_INTERVAL = 300

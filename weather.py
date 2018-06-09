@@ -6,7 +6,7 @@ import urllib.request
 import logging
 import json
 from weather_keys import *
-#from config import *
+from config import *
 import urllib, json
 
 base_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/"
@@ -30,6 +30,9 @@ def getWeather(config, location):
         temp = {};
         i = 2; result = None
         t = time.time()
+        if os.path.isfile("result.json"):
+            with open("result.json", 'r') as f:
+                result = f.read()
         while not result:
             try: 
                 result = urllib.request.urlopen(url).read().decode('utf8')
@@ -41,8 +44,8 @@ def getWeather(config, location):
                 if time.time() - t > 14400: # No update for 4hrs
                     config.weather = {}
 
-        #with open ("result.json", 'w') as f:
-        #    f.write(result)
+        with open ("result.json", 'w') as f:
+            f.write(result)
         #print("saved to result.json")
             
         data = json.loads(result)
@@ -55,8 +58,8 @@ def getWeather(config, location):
 
         #     - Sun
         data_sun = forecasts["Sun"]
-        temp["rise"] = int(data_tempe["EpochRise"])
-        temp["set"] = int(data_tempe["EpochSet"])
+        temp["rise"] = int(data_sun["EpochRise"])
+        temp["set"] = int(data_sun["EpochSet"])
 
         #     - Temperature
         data_tempe = forecasts["Temperature"]
