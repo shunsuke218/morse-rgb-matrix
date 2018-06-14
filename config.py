@@ -24,14 +24,49 @@ PIN = 25
 WIDTH, HEIGHT = 64, 32
 ################################################################
 # Image Setting
-FONT1 = ImageFont.truetype("pixel.ttf", 2)
-FONT3 = ImageFont.truetype("pixel.ttf", 4)
-FONT4 = ImageFont.truetype("pixel.ttf", 5)
-FONT7 = ImageFont.truetype("pixel.ttf", 7)
+font4 = "pixel.ttf"
+font3 = "tiny.ttf"
+font2 = "zepto.ttf"
+font = "digital.ttf"
+font5 = "helv.ttf"
+TIMEFONT = ImageFont.truetype("digital.ttf", 9)
+TIMEFONT = ImageFont.truetype("digital.ttf", 10)
+#NEWSFONT = ImageFont.truetype(font3,8)
+NEWSFONT = ImageFont.truetype("pixel.ttf", 8)
+NEWSFONT2 = ImageFont.truetype(font4,7)
+#NEWSFONT2 = ImageFont.truetype(font2,14)
+#NEWSFONT2 = ImageFont.truetype(font5,9)
+NEWSFONT3 = ImageFont.truetype(font2,8)
+#NEWSFONT3 = ImageFont.truetype(font,8)
+NEWSFONT4 = ImageFont.truetype(font,10)
+NEWSFONT3 = ImageFont.load( \
+    os.path.dirname(os.path.realpath(__file__) ) \
+    + '/helvR08.pil')
+FONT1 = ImageFont.truetype(font, 1)
+FONT2 = ImageFont.truetype(font, 2)
+FONT3 = ImageFont.truetype(font, 3)
+FONT4 = ImageFont.truetype(font, 4)
+FONT5 = ImageFont.truetype(font, 5)
+FONT6 = ImageFont.truetype(font, 6)
+FONT7 = ImageFont.truetype(font, 7)
+FONT72 = ImageFont.truetype(font, 7)
+FONT8 = ImageFont.truetype(font, 8)
+FONT9 = ImageFont.truetype(font, 9)
+FONT10 = ImageFont.truetype(font, 10)
+#FONT8 = ImageFont.truetype(font2, 8)
+#FONT9 = ImageFont.truetype(font, 9)
+#FONT10 = ImageFont.truetype(font3, 8)
+
+"""
+FONT1 = ImageFont.truetype(font, 2)
+FONT3 = ImageFont.truetype(font, 4)
+FONT4 = ImageFont.truetype(font, 5)
+FONT7 = ImageFont.truetype(font, 7)
 FONT8 = ImageFont.load( \
     os.path.dirname(os.path.realpath(__file__) ) \
     + '/helvR08.pil')
-FONT9 = ImageFont.truetype("helv.ttf", 9)
+FONT9 = ImageFont.truetype(font, 9)
+"""
 FONT24 = ImageFont.truetype("helv.ttf", 24)
 ################################################################
 # Color Setting

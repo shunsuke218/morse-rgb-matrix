@@ -48,14 +48,20 @@ class HogeContent(Content):
         draw.text( (x, y), self.text, font=FONT7, fill=(110, 110, 110) )
 
 class NewsContent(Content):
-    def __init__(self, config, odd=False):
+    def __init__(self, config, odd=False, font=NEWSFONT):
         Content.__init__(self)
         self.sizechangeable = True;
         self.config = config
+        self.font = font
         self.odd = int(odd)
-        self.texts = cycle(config.news[self.odd:][::2])
-        self.text = str(next(self.texts)) + "  |  "
-        self.width, self.height = FONT4.getsize(self.text)
+        texts = None
+        while not texts:
+            texts = config.news[self.odd:][::2]
+            time.sleep(.5)
+        logging.debug( "starting newscontents: " + str(id(self)) + str(texts) )
+        self.texts = cycle( texts )
+        self.text = str(next(self.texts)).upper() + " |  "
+        self.width, self.height = self.font.getsize(self.text)
 
         # Start thread to update content this object
         self.thread = threading.Thread(target=self.update)
@@ -65,7 +71,7 @@ class NewsContent(Content):
     def setx(self, x):
         # Update text if reached left-edge
         logging.debug("!!!self.x + self.width <= 0!!!: " + str(self.x + self.width))
-        self.text = str(next(self.texts)) + "  |  "
+        self.text = next(self.texts).upper() + "  |  "
         self.sizeupdated = True
         self.x = x
         
@@ -73,11 +79,11 @@ class NewsContent(Content):
         # If content out of boundry, don't do anything
         if ( x > WIDTH or x + self.width < 0 ): return
 
-        logging.debug(str(id(self)) + ": drawing...: " + str(self.text))
-        logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width: " + str(self.width))
+        #logging.debug(str(id(self)) + ": drawing...: " + str(self.text))
+        #logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", height, width: " + str(self.width) + "," + str(self.width) )
 
         # If content inside the matrix, delete the old one and draw
-        draw.text( (x, y), self.text, font=FONT4, fill=RED )
+        draw.text( (x, y), self.text, font=self.font, fill=GREY )
 
     def update(self):
         while True:
@@ -87,8 +93,9 @@ class NewsContent(Content):
         
     
 class TimeContent(Content):
-    def __init__(self, location=None):
+    def __init__(self, location=None, font=TIMEFONT):
         Content.__init__(self)
+        self.font = font
         if not location:
             self.timezone = datetime.now( timezone.utc ) \
                                 .astimezone().tzinfo
@@ -105,16 +112,14 @@ class TimeContent(Content):
     
     def update(self):
         while True:
-            self.time = datetime.now(self.timezone).strftime("%H:%M:%S %Z  |  ")
-            self.width, self.height = FONT4.getsize(self.time) # May need to change the font
+            self.time = datetime.now(self.timezone).strftime("%H:%M:%S %Z | ")
+            self.width, self.height = self.font.getsize(self.time)
             time.sleep(.5)
         
     def draw(self, x, y, draw):
         # If content out of boundry, don't do anything
         if ( x > WIDTH or x + self.width < 0 ): return
-        #logging.debug("drawing...: " + self.time)
-        #logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width: " + str(self.width))
-        draw.text( (x, y), self.time, font=FONT4, fill=GREY )
+        draw.text( (x, y), self.time, font=self.font, fill=WHITE )
         
 
 class WeatherContent(Content):
@@ -155,14 +160,18 @@ class WeatherContent(Content):
             (str(self.low[0]),FONT3, DARKBLUE),
             ("F",FONT3, GREY)
         ]
-        maxhighx = sum([ info[1].getsize(info[0])[0] for info in self.tempehigh ])
-        maxhighx += self.xspace * len(self.tempehigh) 
-        maxhighy = max([ info[1].getsize(info[0]) for info in self.tempehigh ], key=lambda x:x[1])[1]
+        maxhighsize = [ info[1].getsize(info[0]) for info in self.tempehigh ]
+        #maxhighx = sum([ info[1].getsize(info[0])[0] for info in self.tempehigh ]) + self.xspace * len(self.tempehigh)
+        maxhighx = sum([ temp[0] for temp in maxhighsize]) + self.xspace * len(self.tempehigh)
+        
+        #maxhighy = max([ info[1].getsize(info[0]) for info in self.tempehigh ], key=lambda x:x[1])[1]
+        maxhighy = max( maxhighsize, key=lambda x:x[1] )[1]
         self.highsize = (maxhighx, maxhighy)
 
-        maxlowx = sum([ info[1].getsize(info[0])[0] for info in self.tempelow ])
-        maxlowx += self.xspace * len(self.tempelow)
-        maxlowy = max([ info[1].getsize(info[0]) for info in self.tempelow ], key=lambda x:x[1])[1]
+        maxlowsize = [ info[1].getsize(info[0]) for info in self.tempelow ]
+        #maxlowx = sum([ info[1].getsize(info[0])[0] for info in self.tempelow ]) + self.xspace * len(self.tempelow)
+        maxlowx = sum([ temp[0] for temp in maxlowsize ]) + self.xspace * len(self.tempelow)
+        maxlowy = max(maxlowsize, key=lambda x:x[1])[1]
         self.lowsize = (maxlowx, maxlowy)
         
         self.width += max(maxhighx, maxlowx) + self.xspace
@@ -173,7 +182,8 @@ class WeatherContent(Content):
         while True:
             if self.weather is not config.weather:
                 # If no data is given?
-                if config.weather is {}:
+                if config.weather is {} \
+                   or config.weather.get("headline", None) is None:
                     headline = phrase =  "N/A"
                     icon = "weather/0.png"
                     max = min = (0, 0)
@@ -197,6 +207,8 @@ class WeatherContent(Content):
                 self.headline = headline
                 self.phrase = phrase
                 self.icon = Image.open(icon, 'r')
+                self.icon.thumbnail((32,32))
+                logging.debug(type(self.icon))
                 self.high = max; self.low = min
                 # Update height, width
                 #self.height = FONT4.getsize(self.time)
@@ -209,8 +221,8 @@ class WeatherContent(Content):
             time.sleep(300)
 
     def draw(self, x, y, draw):
-        #logging.debug("drawing weather...")
-        #logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width: " + str(self.width))
+        logging.debug("drawing weather...")
+        logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width,height: " + str(self.width) + "," + str(self.height) )
         xspace = self.xspace; yspace = self.xspace
         def printing(x,y,input,pfont, pcolor):
             #logging.debug(input + " will be printed at: " + str((x,y)))

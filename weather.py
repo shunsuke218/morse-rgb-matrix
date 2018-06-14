@@ -30,13 +30,18 @@ def getWeather(config, location):
         temp = {};
         i = 2; result = None
         t = time.time()
-        if os.path.isfile("result.json"):
+        logging.debug("Weather file too old?: " + str(time.time() - os.path.getmtime("result.json") < 3600))
+        if os.path.isfile("result.json") and \
+           time.time() - os.path.getmtime("result.json") < 3600:
             with open("result.json", 'r') as f:
                 result = f.read()
         while not result:
             try: 
                 result = urllib.request.urlopen(url).read().decode('utf8')
                 t = time.time()
+                with open ("result.json", 'w') as f:
+                    f.write(result)
+                logging.debug("Weather info updated!!")
             except Exception as e:
                 logging.debug("error occured!: " + str(e))
                 #print("error occured!: " + str(e))
@@ -44,8 +49,6 @@ def getWeather(config, location):
                 if time.time() - t > 14400: # No update for 4hrs
                     config.weather = {}
 
-        with open ("result.json", 'w') as f:
-            f.write(result)
         #print("saved to result.json")
             
         data = json.loads(result)

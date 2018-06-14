@@ -18,46 +18,36 @@ class info_thread(threading.Thread):
         self.global_status = input
         self.daemon = True
 
-
         # Config
         self.config = input
 
         # Tiles
         self.tiles = []
-        YOffset = 0
+        offset = 0; self.tile = 0
+
+        def addtile(contents, y, speed):
+            self.tiles.append(Tile(contents, self.config, y))
+            self.tiles[self.tile].speed = speed
+            logging.debug( "Tile " + str(self.tile) + "'s speed: " + str(self.tiles[self.tile].speed) )
+            self.tile += 1
+            return self.tiles[ ( self.tile - 1 ) ].height
+
         # Time
-        self.tiles.append( \
-            Tile( [ TimeContent(n) for n in (None, "Japan", None, "France") ], config) )
-        self.tiles[0].speed = 2
-        YOffset += self.tiles[0].height + 2
-        logging.debug("[0] height: " + str(self.tiles[0].height) + " YOffset: " + str(YOffset))
-
+        offset += addtile(
+            [ TimeContent(n) for n in (None, "Japan", None, "France") ],
+            offset, 2
+        )
         # Weather
-        self.tiles.append( \
-            Tile( [ WeatherContent(config), HogeContent(), WeatherContent(config), HogeContent() ], config, YOffset) )
-        self.tiles[1].speed = 3
-        YOffset += self.tiles[1].height + 2
-        logging.debug("[1] height: " + str(self.tiles[1].height) + " YOffset: " + str(YOffset))
-
+        offset += addtile(
+            [ WeatherContent(config), HogeContent(),
+              WeatherContent(config), HogeContent() ],
+            offset, 3
+        )
         # News
-        self.tiles.append( \
-            Tile( [ NewsContent(config), NewsContent(config, True) ], config, YOffset) )
-        self.tiles[2].speed = 4
-        YOffset += self.tiles[2].height + 2
-        logging.debug("[2] height: " + str(self.tiles[2].height) + " YOffset: " + str(YOffset))
-        """
-        self.tiles.append( \
-            Tile( [ TimeContent(n) for n in ("Japan", "France", "Japan", None, "Japan", "France") ], config, YOffset) )
-        self.tiles[2].speed = 5
-        YOffset += self.tiles[2].height + 2
-        logging.debug("[2] height: " + str(self.tiles[2].height) + " YOffset: " + str(YOffset))
-
-        self.tiles.append( \
-            Tile( [ WeatherContent(config), HogeContent(), HogeContent() ], config, YOffset) )
-        self.tiles[3].speed = 4
-        YOffset += self.tiles[3].height + 2
-        """
-
+        addtile(
+            [ NewsContent(config), NewsContent(config, True) ],
+            HEIGHT - 8, 2
+        )
 
     # Main section
     def run(self):

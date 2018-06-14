@@ -62,7 +62,7 @@ class input_thread(threading.Thread):
             # If key was released longer than the threshold...
             if key_up_length >= INFOLENGTH:
                 # Longest: No input for very long time. Goto Info thread
-                if self.config.get_global_status() is not "sleep":
+                if self.config.get_global_status() is "output_thread":
                     self.config.set_global_status( "info_thread" )
             elif key_up_length >= WORDLENGTH * 3:
                 # Second Longest: end of a word; delete word/buffer
