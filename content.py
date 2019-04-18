@@ -221,8 +221,8 @@ class WeatherContent(Content):
             time.sleep(300)
 
     def draw(self, x, y, draw):
-        logging.debug("drawing weather...")
-        logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width,height: " + str(self.width) + "," + str(self.height) )
+        #logging.debug("drawing weather...")
+        #logging.debug("x,y: " + str(x) + "," +  str(y) + " xd,yd: " + str(x + self.width) + "," + str(y + self.height) + ", width,height: " + str(self.width) + "," + str(self.height) )
         xspace = self.xspace; yspace = self.xspace
         def printing(x,y,input,pfont, pcolor):
             #logging.debug(input + " will be printed at: " + str((x,y)))

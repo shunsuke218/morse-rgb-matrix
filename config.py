@@ -12,16 +12,16 @@ from ToneSound import *
 # Morse Code Setting
 MINKEYLENGTH = .10 # .07 # Minimum dit
 KEYLENGTH = .20 #dit-doh boundary
-WORDLENGTH = .90 # Word boundary
+WORDLENGTH = .80 # Word boundary
 SLEEPLENGTH = 2 # Goto Sleep
 INFOLENGTH = 60 # Goto Info Threadx
 DOT = "."; DASH = "-"    
 ################################################################
 # Key Setting
-PIN = 25
+PIN = 25 # (RED=25, BLACK=GRD)
 ################################################################
 # Matrix Setting
-WIDTH, HEIGHT = 64, 32
+WIDTH, HEIGHT = 128, 32
 ################################################################
 # Image Setting
 font4 = "pixel.ttf"

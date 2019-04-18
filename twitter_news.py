@@ -15,7 +15,7 @@ api = tweepy.API(auth)
 
 def getNews():
     config.news = [ "No Data" ]
-    while True: 
+    while True:
         raw = None; i = 2;
         if time.time() - os.path.getmtime("news.txt") < 3600:
             with open("news.txt", 'r') as f:

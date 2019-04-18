@@ -68,8 +68,6 @@ def main():
     stock.name = "Stock"
     '''
 
-
-    
     thread_info = info_thread(myconfig)
     thread_news = news_thread(myconfig)
     thread_output = output_thread(myconfig)
@@ -96,13 +94,13 @@ def main():
     check_lock = lambda x: "LOCKED" if x.locked() else "NOT LOCKED"
     logging.debug("Ready")
     while True:
-        """
+
         logging.debug("global_status: " +  myconfig.get_global_status())
         logging.debug("info: " +  check_lock(thread_info.lock) + \
                       ", bus: " +  check_lock(thread_bus.lock) + \
                       ", output: " +  check_lock(thread_output.lock) + \
                       ", news: " +  check_lock(thread_news.lock) )
-        """
+
         if local_status is not myconfig.get_global_status():
             # If config changes, state also changes
             logging.debug("status changed!!!")

@@ -91,10 +91,11 @@ class input_thread(threading.Thread):
         # Start Thread
         thread.start_new_thread(self.decoder_thread, ())
 
+        logging.debug("Ready")
         while True:
             # Print current word/buffer
             logging.debug("word: " + str(config.word))
-            logging.debug("buffer: " + str(config.buffer))
+            #logging.debug("buffer: " + str(config.buffer))
 
             # Waiting for key to be pressed
             self.key_up_time = time.time()
