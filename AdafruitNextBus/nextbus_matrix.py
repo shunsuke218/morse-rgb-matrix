@@ -14,6 +14,9 @@ from rgbmatrix import RGBMatrix
 import logging
 import threading, time
 
+logging.basicConfig(level=logging.DEBUG,
+                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+                    )
 class bus_thread(threading.Thread):
         def __init__(self, output):
                 # Thread settings
@@ -23,6 +26,8 @@ class bus_thread(threading.Thread):
                 self.lock = threading.Lock()
                 # Config
                 self.config = output
+                self.width = output.width
+                self.height = output.height
 
         def run(self):
                 # Configurable stuff ---------------------------------------------------------
@@ -43,8 +48,8 @@ class bus_thread(threading.Thread):
                 shortTime      = 8   # Times less than this are displayed in red
                 midTime        = 15  # Times less than this are displayed yellow
 
-                width          = 64  # Matrix size (pixels) -- change for different matrix
-                height         = 32  # types (incl. tiling).  Other code may need tweaks.
+                width          = self.width  # Matrix size (pixels) -- change for different matrix
+                height         = self.height  # types (incl. tiling).  Other code may need tweaks.
                 #matrix         = Adafruit_RGBmatrix(32, 2) # rows, chain length
                 matrix         = self.config.matrix
                 fps            = 10 #20  # Scrolling speed (ish)
@@ -94,6 +99,7 @@ class bus_thread(threading.Thread):
                 predictList = []                       # Clear list
                 for s in stops:                        # For each item in stops[] list...
                         predictList.append(predict(s)) # Create object, add to predictList[]
+                        logging.debug(predictList[-1].toString())
                         w = font.getsize(s[1] + ' ' + s[3])[0] # Route label
                         if(w > tileWidth):                     # If widest yet,
                                 tileWidth = w                  # keep it

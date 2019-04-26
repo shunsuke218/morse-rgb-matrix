@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from rgbmatrix import RGBMatrix
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageDraw, ImageFont
 import gpiozero as gpio
 
@@ -12,9 +12,9 @@ from ToneSound import *
 # Morse Code Setting
 MINKEYLENGTH = .10 # .07 # Minimum dit
 KEYLENGTH = .20 #dit-doh boundary
-WORDLENGTH = .80 # Word boundary
+WORDLENGTH = 1.60 # Word boundary
 SLEEPLENGTH = 2 # Goto Sleep
-INFOLENGTH = 60 # Goto Info Threadx
+INFOLENGTH = 60 # Goto Info Thread
 DOT = "."; DASH = "-"    
 ################################################################
 # Key Setting
@@ -24,15 +24,16 @@ PIN = 25 # (RED=25, BLACK=GRD)
 WIDTH, HEIGHT = 128, 32
 ################################################################
 # Image Setting
-font4 = "pixel.ttf"
-font3 = "tiny.ttf"
-font2 = "zepto.ttf"
-font = "digital.ttf"
-font5 = "helv.ttf"
-TIMEFONT = ImageFont.truetype("digital.ttf", 9)
-TIMEFONT = ImageFont.truetype("digital.ttf", 10)
+fontdir = "font/"
+font4 = fontdir + "pixel.ttf"
+font3 = fontdir + "tiny.ttf"
+font2 = fontdir + "zepto.ttf"
+font = fontdir + "digital.ttf"
+font5 = fontdir + "helv.ttf"
+TIMEFONT = ImageFont.truetype( fontdir + "digital.ttf", 9)
+TIMEFONT = ImageFont.truetype( fontdir + "digital.ttf", 10)
 #NEWSFONT = ImageFont.truetype(font3,8)
-NEWSFONT = ImageFont.truetype("pixel.ttf", 8)
+NEWSFONT = ImageFont.truetype( fontdir + "pixel.ttf", 8)
 NEWSFONT2 = ImageFont.truetype(font4,7)
 #NEWSFONT2 = ImageFont.truetype(font2,14)
 #NEWSFONT2 = ImageFont.truetype(font5,9)
@@ -40,8 +41,8 @@ NEWSFONT3 = ImageFont.truetype(font2,8)
 #NEWSFONT3 = ImageFont.truetype(font,8)
 NEWSFONT4 = ImageFont.truetype(font,10)
 NEWSFONT3 = ImageFont.load( \
-    os.path.dirname(os.path.realpath(__file__) ) \
-    + '/helvR08.pil')
+    os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir)) ) \
+    + '/' + fontdir + 'helvR08.pil')
 FONT1 = ImageFont.truetype(font, 1)
 FONT2 = ImageFont.truetype(font, 2)
 FONT3 = ImageFont.truetype(font, 3)
@@ -67,7 +68,7 @@ FONT8 = ImageFont.load( \
     + '/helvR08.pil')
 FONT9 = ImageFont.truetype(font, 9)
 """
-FONT24 = ImageFont.truetype("helv.ttf", 24)
+FONT24 = ImageFont.truetype( fontdir + "helv.ttf", 24)
 ################################################################
 # Color Setting
 GREEN = ( 0, 255, 0)
@@ -96,12 +97,25 @@ class config():
     buffer = []; word = []; code = []
 
     # Tone Object
-    tone_obj = ToneSound(frequency = 500, volume = .5)
+    tone_obj = ToneSound(frequency = 500, volume = 0.8)
     # Key Setting
     key = gpio.Button(PIN, pull_up = True)
     # Matrix Setting
-    matrix = RGBMatrix(32, 2)
+    #matrix = RGBMatrix(32, 3)
+
+
+    options = RGBMatrixOptions()
+    options.rows = WIDTH
+    options.cols = HEIGHT
+    options.rows = 32
+    options.cols = 128
+    options.chain_length = 1
+    options.parallel = 1
+    options.hardware_mapping = 'adafruit-hat'
+
+    matrix = RGBMatrix(options = options)
     #matrix_manip = MatrixManip()
+
     # Image Setting
     image = Image.new('RGB', (WIDTH, HEIGHT))
     draw = ImageDraw.Draw(image)
@@ -115,6 +129,8 @@ class config():
         #self.global_status = ["output_thread"]
         self.global_status = ["info_thread"]
         #self.matrix_manip = MatrixManip(self)
+        self.width = WIDTH
+        self.height = HEIGHT
 
 
     # Setter

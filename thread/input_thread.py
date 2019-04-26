@@ -6,6 +6,7 @@ import os, sys
 import threading, time
 import gpiozero as gpio
 import _thread as thread
+import re
 
 # Local class
 from config import *
@@ -133,7 +134,7 @@ class input_thread(threading.Thread):
             word = "".join(config.word)
             logging.debug("word: " + str(word) )
             status = [ key for key in self.thread_key.keys() \
-                       if word is not None and key in word ]
+                       if word is not None and re.match("^.*"+key+".*$", word) ]
             if any(status):
                 # Change state
                 logging.debug("status change!! " + str(status) )

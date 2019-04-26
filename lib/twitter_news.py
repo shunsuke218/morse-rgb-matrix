@@ -35,16 +35,16 @@ def getNews():
                     for char in  re.sub(r'https*://.+$', '', text.full_text):
                         temp += char if len( char.encode(encoding='utf_8') ) == 1 else ''
                     result.append(temp)
-                    logging.debug(result)
+                    #logging.debug(result)
                 # Save to file
                 with open("news.txt", 'w') as file:
                     for line in result:
                         file.write(line + "\n")
-                logging.debug("File updated!!")
+                #logging.debug("File updated!!")
                 # Re-direct config.news list
                 config.news = result
             except Exception as e:
-                logging.debug("error occured!: " + str(e) )
+                #logging.debug("error occured!: " + str(e) )
                 # Debugging
                 if os.path.isfile("news.txt"):
                     with open("news.txt", 'r') as f:
@@ -55,6 +55,6 @@ def getNews():
                 
                 i = i ** 2; time.sleep(i)
 
-        logging.debug("twitter info updated!")
-        logging.debug(str(config.news))
+        #logging.debug("twitter info updated!")
+        #logging.debug(str(config.news))
         time.sleep(NEWS_INTERVAL)
