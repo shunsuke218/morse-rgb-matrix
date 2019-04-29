@@ -53,6 +53,7 @@ def main():
     twitter.daemon = True
     twitter.name = "Twitter News"
     twitter.start()
+    """
     # Weather Thread
     # Start thread to update weather information
     locid = weather_loc.get("Boston", weather_loc["Boston"])
@@ -60,6 +61,7 @@ def main():
     weather.daemon = True
     weather.name = "Weather"
     weather.start()
+    """
     '''
     # Weather Thread
     weather = threading.Thread(target=getWeather)

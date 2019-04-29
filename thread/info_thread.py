@@ -7,6 +7,10 @@ import threading, time
 # Local class
 from config import *
 from content import *
+from weather import *
+
+from random import randint
+from time import sleep
 
 class info_thread(threading.Thread):
     # Constructor
@@ -35,22 +39,40 @@ class info_thread(threading.Thread):
         # Time
         offset += addtile(
             [ TimeContent(n) for n in (None, "Japan", None, "France") ],
-            offset, 2
+            offset, 4
         )
         # Weather
+        
         offset += addtile(
-            [ WeatherContent(config), HogeContent(),
-              WeatherContent(config), HogeContent() ],
+            [ TextContent("BOSTON", 1), \
+              WeatherContent(config, weather_loc["Boston"], 2), \
+              TextContent("TOKYO", 1), \
+              WeatherContent(config, weather_loc.get("Tokyo", weather_loc["Tokyo"])), \
+              TextContent("BOSTON", 1), \
+              WeatherContent(config, weather_loc.get("Boston", weather_loc["Boston"])), \
+              TextContent("FRANCE", 1), \
+              WeatherContent(config, weather_loc.get("France", weather_loc["France"])) 
+            ],
             offset, 3
         )
         # News
         addtile(
             [ NewsContent(config), NewsContent(config, True) ],
-            HEIGHT - 8, 2
+            HEIGHT - 9, 8
         )
 
     # Main section
     def run(self):
+        """
+        # Moved to WeatherContent __init__
+        for loc in [ "Boston", "Tokyo", "France" ]:
+            locid = weather_loc.get(loc, weather_loc[loc])
+            weather = threading.Thread(target=getWeather, args=(config, locid))
+            weather.daemon = True
+            weather.name = "Weather_" + loc
+            weather.start()
+        """
+        
         #self.weather.start() # Merge this with "Twitter News" in News?
         #self.stock.start()
         #self.twitter.start()
@@ -94,6 +116,9 @@ class Tile():
         # Fill up the tile with contents
         self.fill()
         self.height = max ( [ content.height for content in self.contents  ] )
+        # announce each item the max height
+        for content in self.contents:
+            content.maxheight(self.height)
         logging.debug("This tile's offset: " + str(self.XOffset) + "," + str(self.YOffset))
 
     def fill(self):
@@ -108,8 +133,8 @@ class Tile():
         minindex = min( \
                 enumerate( [ content.x for content in self.contents ] ), \
                 key=lambda x:x[1]) [0]
-        logging.debug([ content.x for content in self.contents ])
-        logging.debug(minindex)
+        #logging.debug([ content.x for content in self.contents ])
+        #logging.debug(minindex)
         self.XOffset = self.contents[minindex].x
         for content in self.contents[minindex:] + self.contents[:minindex]:
             content.x = self.XOffset
@@ -136,14 +161,18 @@ class Tile():
             
 
         # Move left by one
-        [ content.move(self.speed) for content in self.contents ]
+        for content in self.contents:
+            content.move(self.speed)
         self.XOffset -= 1 * self.speed
 
         # If image is out of boundary, update x
-        [ self.update(content) for content in self.contents ]
+        for content in self.contents:
+            self.update(content)
 
         # Draw
-        [ content.draw(content.x, self.YOffset, config.draw) for content in self.contents ]
+        for content in self.contents:
+            content.draw(content.x, self.YOffset, config.draw)
+
 
             
 

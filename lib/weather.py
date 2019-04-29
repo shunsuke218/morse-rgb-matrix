@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import os, time
+import os, time, random
 import urllib.request
 import logging
 import json
 from weather_keys import *
 from config import *
 import urllib, json
+
 
 base_url = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/"
 query = "?language=en-US&details=true&apikey="
@@ -24,37 +25,42 @@ def getWeather(config, location):
 
     #weather_key = "hogehoge!"
     #config = Config()
+    #config.weather = {}
     config.weather = {}
     url = base_url + str(location) + query + weather_key
+    logging.debug("Starting getWeather")
     while True:
         temp = {};
         i = 2; result = None
         t = time.time()
-        logging.debug("Weather file too old?: " + str(time.time() - os.path.getmtime("result.json") < 3600))
-        if os.path.isfile("result.json") and \
-           time.time() - os.path.getmtime("result.json") < 3600:
-            with open("result.json", 'r') as f:
+        if os.path.isfile(str(location) + ".json") and \
+           time.time() - os.path.getmtime(str(location) + ".json") < WEATHER_INTERVAL:
+            logging.debug(str(location) + ": The file already exists!")
+            with open(str(location) + ".json", 'r') as f:
                 result = f.read()
         while not result:
-            try: 
+            logging.debug("No File found for weather!")
+            try:
+                time.sleep(random.randint(2,10))
                 result = urllib.request.urlopen(url).read().decode('utf8')
                 t = time.time()
-                with open ("result.json", 'w') as f:
+                with open (str(location) + ".json", 'w') as f:
                     f.write(result)
                 logging.debug("Weather info updated!!")
             except Exception as e:
                 logging.debug("error occured!: " + str(e))
                 #print("error occured!: " + str(e))
                 i = i **2; time.sleep(i)
-                if time.time() - t > 14400: # No update for 4hrs
-                    config.weather = {}
+                #if time.time() - t > 14400: # No update for 4hrs
+                #    config.weather = {}
 
-        #print("saved to result.json")
             
         data = json.loads(result)
 
         # Headline
         temp["headline"] = data["Headline"]["Text"]
+        temp["time"] = data["Headline"]["EffectiveDate"]
+        temp["time"] = temp["time"][:-3] + temp["time"][-2:]
 
         # DailyForecasts
         forecasts = data["DailyForecasts"][0]
@@ -95,13 +101,13 @@ def getWeather(config, location):
         temp["npreciption"] = data_day["PrecipitationProbability"]
 
         # Re-link config.weather
-        config.weather = temp
+        config.weather[location] = temp 
 
         logging.debug("weather info updated: " + str(config.weather))
-        #print ("weather info updated: " + str(config.weather))
 
         # Sleep
         time.sleep(WEATHER_INTERVAL)
+        #time.sleep(5)
         
 if __name__ == '__main__':
     getWeather(338668)

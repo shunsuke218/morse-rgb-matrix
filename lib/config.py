@@ -28,11 +28,10 @@ fontdir = "font/"
 font4 = fontdir + "pixel.ttf"
 font3 = fontdir + "tiny.ttf"
 font2 = fontdir + "zepto.ttf"
-font = fontdir + "digital.ttf"
-font5 = fontdir + "helv.ttf"
+font_hoge = fontdir + "digital.ttf"
+font = fontdir + "helv.ttf"
 TIMEFONT = ImageFont.truetype( fontdir + "digital.ttf", 9)
 TIMEFONT = ImageFont.truetype( fontdir + "digital.ttf", 10)
-#NEWSFONT = ImageFont.truetype(font3,8)
 NEWSFONT = ImageFont.truetype( fontdir + "pixel.ttf", 8)
 NEWSFONT2 = ImageFont.truetype(font4,7)
 #NEWSFONT2 = ImageFont.truetype(font2,14)
@@ -40,7 +39,7 @@ NEWSFONT2 = ImageFont.truetype(font4,7)
 NEWSFONT3 = ImageFont.truetype(font2,8)
 #NEWSFONT3 = ImageFont.truetype(font,8)
 NEWSFONT4 = ImageFont.truetype(font,10)
-NEWSFONT3 = ImageFont.load( \
+NEWSFONT = ImageFont.load( \
     os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir)) ) \
     + '/' + fontdir + 'helvR08.pil')
 FONT1 = ImageFont.truetype(font, 1)
@@ -50,7 +49,6 @@ FONT4 = ImageFont.truetype(font, 4)
 FONT5 = ImageFont.truetype(font, 5)
 FONT6 = ImageFont.truetype(font, 6)
 FONT7 = ImageFont.truetype(font, 7)
-FONT72 = ImageFont.truetype(font, 7)
 FONT8 = ImageFont.truetype(font, 8)
 FONT9 = ImageFont.truetype(font, 9)
 FONT10 = ImageFont.truetype(font, 10)
@@ -69,6 +67,8 @@ FONT8 = ImageFont.load( \
 FONT9 = ImageFont.truetype(font, 9)
 """
 FONT24 = ImageFont.truetype( fontdir + "helv.ttf", 24)
+FONT16 = ImageFont.truetype( fontdir + "helv.ttf", 16)
+MYFONT = lambda num:ImageFont.truetype(font, num)
 ################################################################
 # Color Setting
 GREEN = ( 0, 255, 0)
@@ -86,7 +86,7 @@ WHITE = (255, 255, 255)
 # News Setting
 NEWS_INTERVAL = 300
 # Weather Setting
-WEATHER_INTERVAL = 1800
+WEATHER_INTERVAL = 1800 * 3
 ################################################################
 
 class config():
